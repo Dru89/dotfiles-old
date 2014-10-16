@@ -1,0 +1,45 @@
+#!/usr/bin/env zsh
+
+# Regular aliases
+alias randstr='cat /dev/urandom | env LC_CTYPE=C tr -cd 'A-Za-z0-9' | head -c'
+
+# Global aliases
+alias -g stack="sed -ne '/\[\(ERROR\|FATAL\)\]/,/\[\(TRACE\|DEBUG\|INFO\|ERROR\|FATAL\)\]/p'"
+alias -g peekerr="grep '\[\(ERROR\|FATAL\)\]'"
+alias -g peekfat="grep '\[FATAL\]'"
+alias -g zpeekerr="zgrep '\[\(ERROR\|FATAL\)\]'"
+
+# Simple functions
+function sed-debug {
+    tail -f $1 | sed -ne '/===========/,/===========/p'
+}
+
+
+# Code Marks / Jumps
+export MARKPATH=$HOME/.marks
+function mark {
+    mkdir -p $MARKPATH; echo "$(pwd)" > "$MARKPATH/$1"
+}
+function jump {
+    mark=$(head -n 1 "$MARKPATH/$1" 2>/dev/null)
+    if [[ $mark != '' ]]; then
+        cd $mark
+    else
+        echo "No such mark: $1"
+    fi
+}
+function unmark {
+    rm $MARKPATH/$1
+}
+function marks {
+    find "$MARKPATH" -type f | while read filename
+    do
+        printf "%-12s -> %s\n" $(basename ${filename}) $(head -n 1 ${filename})
+    done
+}
+function _marks {
+    reply=($(ls $MARKPATH))
+}
+
+compctl -K _marks jump
+compctl -K _marks unmark

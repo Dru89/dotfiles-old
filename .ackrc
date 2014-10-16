@@ -1,0 +1,4 @@
+--ignore-dir
+eclipse-bin
+--ignore-dir
+build
