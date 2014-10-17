@@ -19,7 +19,7 @@
     ui = auto
 [core]
     pager = less -RMSI
-    excludesfile = /home/ahays/gitignore_global
+    excludesfile = ~/gitignore_global
 [diff]
     algorithm = patience
 [merge]
